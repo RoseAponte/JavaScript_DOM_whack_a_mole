@@ -1,3 +1,4 @@
+//step 1 select objects on screen & define globals//
 const holes = document.querySelectorAll('.hole');
 const scoreBoard = document.querySelector('.score');
 const moles = document.querySelectorAll('.mole');
@@ -7,6 +8,7 @@ let lastHole;
 let timeUp = false;
 let score = 0;
 let countdown;
+let timeLimit = 10000;
 function pickRandomHole(holes){
     const randomHole = Math.floor(Math.random() * holes.length);
     const hole = holes[randomHole];
@@ -16,6 +18,7 @@ function pickRandomHole(holes){
     lastHole = hole;
     return hole;
 }
+
 //step 2 add class 'up'//
 function popOut(){
     const time = Math.random() * 1300 + 400;
@@ -26,6 +29,7 @@ function popOut(){
         if(!timeUp) popOut();
     }, time);
 }
+
 //step 3 dynamically change text content to countdown//
 function startGame() {
     countdown = timeLimit/20;
@@ -38,7 +42,29 @@ function startGame() {
     setTimeout(function(){
         timeUp = true;
     }, timeLimit);
-    let startCountdown = setInterval();
-}
+    let startCountdown = setInterval(function(){
+        countdown -= 1;
+        countdownBoard.textContent = countdown;
+        if (countdown < 0){
+            countdown = 0;
+            clearInterval(startCountdown);
+            countdownBoard.textContent = 'Times up!! Thank you for protecting our plannet!';
+        }
+    },1000);
+    }
+
 //step 4 adding event listeners//
+startButton.addEventListener('click', startGame);
+function whack(e){
+    score++;
+    this.style.backgroundImage = 'url("yoda2.png")';
+    this.style.pointerEvents = 'none';
+    setTimeout(() => {
+        this.style.backgroundImage = 'url("yoda1.png")';
+        this.style.pointerEvents = 'all';
+}, 800)
+    scoreBoard.textContent = score;
+}
+
 //step 5 keep track of score with forEach//
+moles.forEach(mole => mole.addEventListener('click', whack));
